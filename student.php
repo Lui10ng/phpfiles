@@ -1,3 +1,23 @@
+<?php
+$servername = "localhost";
+$username = "root";
+$password = "";
+$dbname = "user";
+
+// Create connection
+$conn = new mysqli($servername, $username, $password, $dbname);
+
+// Check connection
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
+
+// Fetch data from the database for records with role = 2
+$sql = "SELECT user_id, username, firstname, middlename, lastname, role, datecreated, email FROM user WHERE role = 2";
+$result = $conn->query($sql);
+
+?>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -22,28 +42,41 @@
 </head>
 <body>
 
-<h1>University Student List</h1>
+<h1>University Student List - Role 2</h1>
 
 <table>
   <tr>
-    <th>Student ID</th>
-    <th>Name</th>
-    <th>Program</th>
-    <th>Year</th>
+    <th>User ID</th>
+    <th>Username</th>
+    <th>First Name</th>
+    <th>Middle Name</th>
+    <th>Last Name</th>
+    <th>Role</th>
+    <th>Date Created</th>
+    <th>Email</th>
   </tr>
-  <tr>
-    <td>1001</td>
-    <td>Alice Johnson</td>
-    <td>Computer Science</td>
-    <td>2nd Year</td>
-  </tr>
-  <tr>
-    <td>1002</td>
-    <td>Bob Smith</td>
-    <td>Engineering</td>
-    <td>3rd Year</td>
-  </tr>
-  <!-- Add more rows as needed -->
+
+  <?php
+    if ($result->num_rows > 0) {
+        // Output data of each row
+        while($row = $result->fetch_assoc()) {
+            echo "<tr>
+                    <td>{$row['user_id']}</td>
+                    <td>{$row['username']}</td>
+                    <td>{$row['firstname']}</td>
+                    <td>{$row['middlename']}</td>
+                    <td>{$row['lastname']}</td>
+                    <td>{$row['role']}</td>
+                    <td>{$row['datecreated']}</td>
+                    <td>{$row['email']}</td>
+                  </tr>";
+        }
+    } else {
+        echo "<tr><td colspan='8'>No data found</td></tr>";
+    }
+
+    $conn->close();
+  ?>
 </table>
 
 </body>
